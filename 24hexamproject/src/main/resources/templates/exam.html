@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam</title>
+</head>
+<body>
+
+<h1>Register a new student:</h1>
+<form action="/student-create" th:object="${newStudent}" method="post">
+    <label for="createName">Name</label>
+    <input type="text" name="name" th:field="*{name}" id="createName">
+    <label for="createEmail">Email</label>
+    <input type="text" name="email" th:field="*{email}" id="createEmail">
+    <select type="text" name="supervisorBySupervisorId" th:field="*{supervisorBySupervisorId}">
+        <option th:each="supervisor: ${supervisorList}"
+                th:value="${supervisor.id}"
+                th:text="${supervisor.name}"
+        />
+    </select>
+    <button type="submit">Register</button>
+</form>
+
+<br>
+<br>
+
+<h1>Students registered:</h1>
+<th:block th:each="student: ${studentList}">
+    <form action="/student-update" method="post" style="float: left; clear: left">
+        <input type="hidden" name="id" th:value="${student.id}" readonly>
+        <label for="name">Name</label>
+        <input type="text" name="name" th:value="${student.name}"  id="name">
+        <label for="email">Email</label>
+        <input type="text" name="email" th:value="${student.email}" id="email">
+
+        <select type="text" name="supervisorBySupervisorId" th:value="${student.supervisorBySupervisorId}">
+            <option th:value="${student.supervisorBySupervisorId.id}" th:text="${student.supervisorBySupervisorId.name}"/>
+            <option th:each="supervisor: ${supervisorList}"
+                    th:if="${student.supervisorBySupervisorId.id} != ${supervisor.id}"
+                    th:value="${supervisor.id}"
+                    th:text="${supervisor.name}"
+            />
+        </select>
+        <button type="submit">Update</button>
+    </form>
+    <form th:action="@{'/student-delete/'+${student.id}}" method="post" style="float: left; clear: right">
+            <button>Delete</button>
+    </form>
+
+</th:block>
+
+</body>
+</html>
